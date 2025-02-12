@@ -1,0 +1,37 @@
+version: '3'
+services:
+  backend:
+    image: backend-dev
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env  # This line will explicitly load the .env file
+    depends_on:
+      - mongodb
+    networks: 
+      - gondal
+  frontend: 
+    image: nextjs-dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - gondal
+  mongodb:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - gondal
+
+volumes:
+  mongodb-data:
+networks:
+  gondal:
+    driver: bridge
