@@ -22,6 +22,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
 
     steps:
       - name: Checkout code
@@ -46,8 +49,22 @@ jobs:
           push: false
           tags: nextjs-dev
 
+      - name: Wait for MongoDB to be ready
+        run: |
+          echo "Waiting for MongoDB to start..."
+          for i in {1..30}; do
+            if mongo --eval 'db.runCommand({ ping: 1 })' > /dev/null 2>&1; then
+              echo "MongoDB is ready!"
+              break
+            else
+              echo "MongoDB not ready yet, retrying in 5 seconds..."
+              sleep 5
+            fi
+          done
+
       - name: Run tests
         run: |
           docker-compose up -d
           # Add commands to run your tests here
+          # Example: docker-compose exec backend pytest
           docker-compose down
