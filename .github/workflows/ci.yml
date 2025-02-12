@@ -14,7 +14,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo
+        image: mongo:6.0  # Use a specific version of MongoDB
         ports:
           - 27017:27017
         options: >-
@@ -22,9 +22,11 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
+          --memory="1g"  # Allocate 1GB of memory
+          --cpus="1.0"   # Allocate 1 CPU core
+        # env:
+        #   MONGO_INITDB_ROOT_USERNAME: root
+        #   MONGO_INITDB_ROOT_PASSWORD: example
 
     steps:
       - name: Checkout code
@@ -61,10 +63,17 @@ jobs:
               sleep 5
             fi
           done
+          echo "Waiting an additional 10 seconds to ensure MongoDB is fully initialized..."
+          sleep 10
+
+      - name: Print MongoDB logs if it fails
+        if: failure()
+        run: |
+          echo "MongoDB logs:"
+          docker logs mongodb
 
       - name: Run tests
         run: |
           docker-compose up -d
           # Add commands to run your tests here
-          # Example: docker-compose exec backend pytest
           docker-compose down
