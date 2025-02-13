@@ -12,23 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # services:
-    #   mongodb:
-    #     image: mongo:6.0  # Use a specific version of MongoDB
-    #     ports:
-    #       - 27017:27017
-    #     options: >-
-    #       --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #       --memory="1g"
-    #       --cpus="1.0"
-        # Uncomment if authentication is required
-        # env:
-        #   MONGO_INITDB_ROOT_USERNAME: root
-        #   MONGO_INITDB_ROOT_PASSWORD: example
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -51,27 +34,6 @@ jobs:
           file: ./deligance/Dockerfile
           push: false
           tags: nextjs-dev
-
-      - name: Wait for MongoDB to be ready
-        run: |
-          echo "Waiting for MongoDB to start..."
-          for i in {1..30}; do
-            if mongo --eval 'db.runCommand({ ping: 1 })' > /dev/null 2>&1; then
-              echo "MongoDB is ready!"
-              break
-            else
-              echo "MongoDB not ready yet, retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-          echo "Waiting an additional 10 seconds to ensure MongoDB is fully initialized..."
-          sleep 10
-
-      - name: Print MongoDB logs if it fails
-        if: failure()
-        run: |
-          echo "MongoDB logs:"
-          docker logs mongodb
 
       - name: Run tests
         run: |
