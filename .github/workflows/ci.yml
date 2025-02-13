@@ -12,18 +12,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:6.0  # Use a specific version of MongoDB
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-          --memory="1g"
-          --cpus="1.0"
+    # services:
+    #   mongodb:
+    #     image: mongo:6.0  # Use a specific version of MongoDB
+    #     ports:
+    #       - 27017:27017
+    #     options: >-
+    #       --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #       --memory="1g"
+    #       --cpus="1.0"
         # Uncomment if authentication is required
         # env:
         #   MONGO_INITDB_ROOT_USERNAME: root
